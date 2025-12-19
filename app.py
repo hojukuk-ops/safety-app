@@ -34,9 +34,9 @@ check_outside = st.checkbox("사업장 밖(외) 작업입니다.")
 check_high_risk = st.checkbox("고위험 작업이 포함되어 있나요? (화재, 폭발, 질식, 고소작업 등)")
 col_sub1, col_sub2 = st.columns(2)
 with col_sub1:
-    check_over_30 = st.checkbox("공사 기간 30일 초과")
+    check_over_30 = st.checkbox("연속된 작업으로 공사 기간 30일 초과")
 with col_sub2:
-    check_over_60_year = st.checkbox("연간 총 공사기간 60일 초과")
+    check_over_60_year = st.checkbox("간헐적 작업으로 연간 총 공사기간 60일 초과")
 
 # ==========================================
 # 2. 로직 처리 함수 (AI 통신)
@@ -46,7 +46,7 @@ def get_ai_analysis(job_name):
     try:
         genai.configure(api_key=API_KEY)
         # 사장님이 요청하신 Flash 모델 사용
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-3-flash-preview')
         
         prompt = f"""
         당신은 산업안전보건법 전문가입니다. 
@@ -272,4 +272,5 @@ if st.button("🚀 AI 분석 및 결과 생성", type="primary"):
                     file_name=f"안전점검_{job_name}.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     type="primary"
+
                 )
