@@ -14,14 +14,10 @@ st.set_page_config(page_title="안산도시공사 안전보건 AI", page_icon="�
 # ==========================================
 # 0. API 키 설정 (보안 강화)
 # ==========================================
-# .streamlit/secrets.toml 파일에서 키를 가져옵니다.
 try:
     API_KEY = st.secrets["GOOGLE_API_KEY"]
 except:
     st.error("🚨 API 키를 찾을 수 없습니다.")
-    st.info("1. 프로젝트 폴더에 `.streamlit` 폴더를 만드세요.")
-    st.info("2. 그 안에 `secrets.toml` 파일을 만드세요.")
-    st.info("3. 파일 내용에 `GOOGLE_API_KEY = '새로운키'` 를 입력하고 저장하세요.")
     st.stop()
 
 # ==========================================
@@ -50,7 +46,8 @@ with col2:
     
 st.markdown("### ✅ 작업 조건 체크")
 check_outside = st.checkbox("사업장 밖(외) 작업인가요?")
-check_high_risk = st.checkbox("고위험 작업이 포함되어 있나요? (화재, 폭발, 질식, 중장비, 고소작업 등)")
+# 문구 수정: 사용자가 헷갈리지 않게 설명을 보강
+check_high_risk = st.checkbox("고위험 작업이 포함되어 있나요? (밀폐공간, 고소, 중장비, 화기, 굴착, 방사선 작업 등)")
 col_sub1, col_sub2 = st.columns(2)
 with col_sub1:
     check_over_30 = st.checkbox("연속된 작업으로 공사 기간 30일 초과")
@@ -63,16 +60,18 @@ with col_sub2:
 def get_ai_analysis(job_name):
     try:
         genai.configure(api_key=API_KEY)
-        model = genai.GenerativeModel('gemini-3-flash-preview')
+        model = genai.GenerativeModel('gemini-3-flash-preview') # 모델명 최신화 권장 (gemini-3-flash-preview 등 사용 가능 시 유지)
         
         prompt = f"""
-        당신은 산업안전보건법 전문가이자 베테랑 현장 소장입니다. 
+        당신은 산업안전보건법 및 중대재해 처벌법 전문가이자 베테랑 현장 소장입니다. 
         작업명: "{job_name}"
         
         다음 3가지를 분석하여 JSON으로만 답하세요. (마크다운 없이 순수 JSON만)
         1. industry: "건설업" 또는 "기타업종"
         2. is_low_risk: 전화상담, 단순 사무보조, 소프트웨어 설치, 단순 강의, 행사 진행 등 신체적 위험이 거의 없는 단순 노무/사무 용역인지 (true/false)
         3. risks: 이 작업의 핵심 위험요인 10개 이상을 발굴하고, 각 위험요인별로 작업반장님이 근로자에게 지시할 구체적인 '안전대책(한 줄 멘트)'을 쌍으로 작성.
+        
+        *중요: 고소작업, 화기작업, 밀폐공간, 중장비 사용 등 작업계획서 작성이 필요한 위험요소가 있다면 반드시 포함시키세요.*
 
         [응답 예시]
         {{
@@ -88,22 +87,14 @@ def get_ai_analysis(job_name):
         text = response.text.replace('```json', '').replace('```', '').strip()
         return json.loads(text)
     except Exception as e:
-        try:
-            model = genai.GenerativeModel('gemini-3-flash-preview')
-            response = model.generate_content(prompt)
-            text = response.text.replace('```json', '').replace('```', '').strip()
-            return json.loads(text)
-        except:
-            st.error(f"오류 발생: {e}")
-            return None
+        st.error(f"오류 발생: {e}")
+        return None
 
 def create_excel(data):
     output = BytesIO()
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
     
-    # ---------------------------------------------------------
     # [시트 1] 결과보고서
-    # ---------------------------------------------------------
     df = pd.DataFrame(columns=["구분", "내용"])
     df.to_excel(writer, index=False, sheet_name='결과보고서')
     
@@ -160,52 +151,39 @@ def create_excel(data):
     ws1.set_column('A:A', 5)
     ws1.set_column('B:B', 70)
 
-    # ---------------------------------------------------------
-    # [시트 2] 안전·보건 교육 일지 (A4 최적화 + 35포인트 높이)
-    # ---------------------------------------------------------
+    # [시트 2] 안전·보건 교육 일지
     df2 = pd.DataFrame()
     df2.to_excel(writer, index=False, sheet_name='교육일지')
     ws2 = writer.sheets['교육일지']
-
-    # A4 설정
     ws2.set_paper(9) # A4
     ws2.fit_to_pages(1, 1) 
     ws2.set_portrait() 
     ws2.set_margins(left=0.5, right=0.5, top=0.5, bottom=0.5)
 
-    # 스타일 정의
     f_center = wb.add_format({'align': 'center', 'valign': 'vcenter', 'border': 1, 'text_wrap': True})
     f_left = wb.add_format({'align': 'left', 'valign': 'vcenter', 'border': 1, 'text_wrap': True})
     f_bold_center = wb.add_format({'bold': True, 'align': 'center', 'valign': 'vcenter', 'border': 1, 'bg_color': '#F2F2F2'})
     f_title = wb.add_format({'bold': True, 'font_size': 22, 'align': 'center', 'valign': 'vcenter', 'underline': True})
-    
-    # 열 너비 13
+    f_cell_left_top = wb.add_format({'align': 'left', 'valign': 'top', 'border': 1, 'text_wrap': True})
+
     ws2.set_column('A:A', 15)
     ws2.set_column('B:I', 13) 
-
-    # 수기 작성란 높이 (35)
     manual_row_height = 35
 
-    # 1. 타이틀
     ws2.merge_range('A1:F3', "안 전 · 보 건  교 육  일 지", f_title)
-
-    # 2. 결재란
     ws2.merge_range('G1:G3', "결\n\n재", f_center)
     ws2.write('H1', "담 당", f_bold_center)
     ws2.merge_range('H2:H3', "", f_center)
     ws2.write('I1', "부 장", f_bold_center)
     ws2.merge_range('I2:I3', "", f_center)
 
-    # 3. 교육일시 (높이 35, 빈칸)
     ws2.set_row(3, manual_row_height)
     ws2.write('A4', "교육일시", f_bold_center)
     ws2.merge_range('B4:I4', "", f_left) 
 
-    # 4. 교육구분
     ws2.merge_range('A5:A6', "교육구분", f_bold_center)
     ws2.merge_range('B5:I6', "☑ 도급 용역 전 안전보건 교육", f_left)
 
-    # 5. 인원 현황
     ws2.write('A7', "구  분", f_bold_center)
     ws2.merge_range('B7:C7', "계", f_bold_center)
     ws2.merge_range('D7:E7', "남", f_bold_center)
@@ -221,29 +199,21 @@ def create_excel(data):
         ws2.merge_range(r, 5, r, 6, "", f_center)
         ws2.merge_range(r, 7, r, 8, "", f_center)
 
-    # 6. 교육 제목 및 자료
     ws2.write('A11', "교육제목", f_bold_center)
     ws2.merge_range('B11:I11', f"{data['job_name']} 작업 전 안전보건교육", f_left)
-    
     ws2.write('A12', "교육자료", f_bold_center)
     ws2.merge_range('B12:I12', "□ 교안    □ PPT    ☑ 기타 (현장 TBM 자료)", f_left)
 
-    # 7. 교육 내용
     ws2.merge_range('B13:E13', "위험 요인", f_bold_center)
     ws2.merge_range('F13:I13', "핵심 안전수칙", f_bold_center)
-    
-    f_cell_left_top = wb.add_format({'align': 'left', 'valign': 'top', 'border': 1, 'text_wrap': True})
     
     risks = data['risks']
     risk_count = len(risks)
     if risk_count == 0: risk_count = 1 
-    
     last_risk_row = 12 + risk_count 
     ws2.merge_range(12, 0, last_risk_row, 0, "교 육\n내 용", f_bold_center)
 
-    # 기본 행 높이 32
     base_height = 32 
-    
     if not risks:
         ws2.merge_range(13, 1, 13, 8, "해당 없음 (사업장 밖 작업 또는 단순 노무/사무)", f_cell_left_top)
         ws2.set_row(13, base_height)
@@ -253,22 +223,15 @@ def create_excel(data):
             risk_text = f"{i+1}. {item['risk']}"
             measure_text = f"👉 {item['measure']}"
             
-            # 높이 자동 조절
             max_len = max(len(risk_text), len(measure_text))
             lines = (max_len // 22) + 1 
             row_height = max(base_height, lines * 16) 
-            
             ws2.set_row(r, row_height) 
-            
             ws2.merge_range(r, 1, r, 4, risk_text, f_cell_left_top)
             ws2.merge_range(r, 5, r, 8, measure_text, f_cell_left_top)
 
-    # 8. 실시자 및 장소 (바로 밑에 붙임)
     start_row = last_risk_row + 1
-    
-    # 실시자 행 높이 35
     ws2.set_row(start_row, manual_row_height)
-    
     ws2.merge_range(start_row, 0, start_row+1, 0, "교육실시자\n및 장소", f_bold_center)
     ws2.write(start_row, 1, "성 명", f_bold_center)
     ws2.merge_range(start_row, 2, start_row, 3, "", f_center)
@@ -277,7 +240,6 @@ def create_excel(data):
     ws2.write(start_row, 7, "장 소", f_bold_center)
     ws2.write(start_row, 8, "", f_center)
 
-    # 특기사항 행 높이 35
     ws2.set_row(start_row+1, manual_row_height)
     ws2.write(start_row+1, 1, "특기사항", f_bold_center)
     ws2.merge_range(start_row+1, 2, start_row+1, 8, "", f_left)
@@ -331,7 +293,7 @@ if st.session_state.analyzed and st.session_state.ai_result:
         else:
             st.success(f"✅ '{result_data.get('industry', '기타')}' (단순/저위험 용역)으로 확인되었습니다.")
             
-        st.info("📌 위험성 평가 절차가 생략되며, **[안전서약서]** 징구로 갈음합니다.")
+        st.info("📌 안전보건관리계획서 대신, **[안전서약서]** 로 대체 가능합니다.")
         final_selected_risks = []
         
     else:
@@ -345,6 +307,7 @@ if st.session_state.analyzed and st.session_state.ai_result:
         with st.container(border=True):
             for i, item in enumerate(result_data['risks']):
                 label = f"⚠️ {item['risk']} (대책: {item['measure']})"
+                # 기본값을 True로 할지 False로 할지는 선택 (현재: False)
                 if st.checkbox(label, value=False, key=f"risk_checkbox_{i}"):
                     final_selected_risks.append(item) 
         
@@ -366,7 +329,7 @@ if st.session_state.analyzed and st.session_state.ai_result:
                     st.warning("위험요인과 대책을 모두 입력해주세요.")
 
     # =========================================================
-    # 3단계: 웹 보고서 출력
+    # 3단계: 웹 보고서 출력 (여기가 핵심 수정 부분)
     # =========================================================
     
     industry = result_data.get('industry', '기타')
@@ -376,6 +339,25 @@ if st.session_state.analyzed and st.session_state.ai_result:
     needs_joint = False
     if industry == "건설업" and duration >= 60: needs_joint = True
     elif industry != "건설업" and duration >= 90: needs_joint = True
+
+    # [핵심 로직] 작업계획서가 필요한 고위험 키워드 리스트
+    special_risk_keywords = ["고소", "추락", "화기", "용접", "절단", "불티", "밀폐", "질식", "중장비", "지게차", "굴착", "크레인", "비계"]
+    
+    # AI가 찾아낸 위험요소(사용자가 선택한 것) 중에 키워드가 있는지 검사
+    detected_high_risk_task = False
+    detected_keywords = []
+
+    for item in final_selected_risks:
+        risk_text = item['risk']
+        # 키워드가 포함되어 있으면 True
+        for keyword in special_risk_keywords:
+            if keyword in risk_text:
+                detected_high_risk_task = True
+                detected_keywords.append(keyword)
+                break # 하나의 항목에서 키워드 하나만 찾으면 루프 탈출
+    
+    # 중복 키워드 제거
+    detected_keywords = list(set(detected_keywords))
 
     if check_outside:
         conclusion = "사업장 밖(외) 작업 (안전서약서 대상)"
@@ -391,11 +373,12 @@ if st.session_state.analyzed and st.session_state.ai_result:
         if duration >= 90:
              doc_period.append("안전근로협의체 (계약 90일 이상, 분기별 1회, 안전보건의견서 작성)")
         
-    elif not check_high_risk and not final_selected_risks:
+    elif not check_high_risk and not final_selected_risks and not detected_high_risk_task:
+        # 고위험 체크도 안했고, 위험요인도 선택 안했고, 감지된 고위험 키워드도 없을 때
         conclusion = "위험요인 미식별 (안전서약서 갈음)"
         doc_review.append("안전서약서 (식별된 위험요인 없음)")
         doc_review.append("적격수급업체평가표")
-        doc_action = ["위험성평가", "안전보건교육", "작업허가서"]
+        doc_action = ["위험성평가표", "안전보건교육 (일지, 사진, 서명록)", "작업허가서 (핸디전자결재 후 편철)"]
         if industry == "건설업": doc_action.append("작업장 순회점검 (2일 1회), 작업장 순회점검일지 핸디 전자결재 후 편철")
         else: doc_action.append("작업장 순회점검 (1주 1회), 작업장 순회점검일지 핸디 전자결재 후 편철")
         risk_level_str = "일반/준저위험"
@@ -406,11 +389,24 @@ if st.session_state.analyzed and st.session_state.ai_result:
         if check_over_30 or check_over_60_year: doc_period.append("안전보건협의체 (사장님 및 수급업체 대표 참여한 합동회의 실시, 월 1회, 위임가능, 회의결과보고)")
         if duration>=90: doc_period.append("안전근로협의체 (계약 90일 이상, 분기별 1회, 안전보건의견서 작성)")
     else:
+        # 일반 혹은 고위험
         conclusion = "산업안전보건법 절차 이행 필요"
-        risk_level_str = "일반/고위험"
         doc_review = ["안전보건관리계획서", "적격수급업체평가표"]
-        if check_high_risk or final_selected_risks:
-            doc_review.append("작업계획서 (위험요인 작업 해당)")
+        
+        # [조건 수정] 수동 체크(check_high_risk) OR 자동 감지(detected_high_risk_task) 둘 중 하나라도 참이면
+        if check_high_risk or detected_high_risk_task:
+            reason = ""
+            if detected_high_risk_task:
+                reason = f" (사유: {', '.join(detected_keywords)} 관련 위험 선택됨)"
+            doc_review.append(f"작업계획서{reason}")
+            risk_level_str = "일반/고위험 (작업계획서 대상)"
+            
+            # 사용자에게 알림 (UI 표시)
+            if not check_high_risk and detected_high_risk_task:
+                 st.warning(f"🚨 선택하신 위험요인에 **[{', '.join(detected_keywords)}]** 작업이 포함되어 있어 '작업계획서'가 자동으로 추가되었습니다.")
+        else:
+             risk_level_str = "일반/위험"
+
         doc_action = ["위험성평가표", "안전보건교육 (일지, 사진, 서명록)", "작업허가서(핸디전자결재 후 편철)"]
         if industry == "건설업": doc_action.append("순회점검 (2일 1회), 작업장 순회점검일지 핸디 전자결재 후 편철")
         else: doc_action.append("순회점검 (1주 1회),작업장 순회점검일지 핸디 전자결재 후 편철")
