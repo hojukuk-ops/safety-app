@@ -83,4 +83,4 @@ with col2:
 # 4. 푸터 (하단 정보)
 # ==========================================
 st.markdown("---")
-st.caption("ⓒ Ansan Urban Corporation Safety Team | 시스템 문의: 안전관리팀 진형국(내선 4872)")
+st.caption("ⓒ Ansan Urban Corporation Safety Team | 시스템 문의: 안전관리팀 주임 진형국(내선 4872)")
