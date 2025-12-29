@@ -10,16 +10,22 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. 사이드바 글자 짤림 방지 CSS
+# 2. 통합 CSS 스타일 (여기에 넣으면 모든 페이지에 적용됩니다!)
 # ==========================================
 st.markdown("""
 <style>
+    /* 1. 사이드바 메뉴 텍스트 줄바꿈 & 예쁘게 */
     div[data-testid="stSidebarNav"] span {
         white-space: normal !important;
         line-height: 1.5 !important;
         word-break: keep-all;
         padding-top: 5px;
         padding-bottom: 5px;
+    }
+    
+    /* 2. [추가] 모든 페이지의 제목 옆 '클립(🔗)' 아이콘 숨기기 */
+    [data-testid="stHeaderActionElements"] {
+        display: none !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -44,17 +50,16 @@ pg = st.navigation(pages)
 pg.run()
 
 # ==========================================
-# 5. [추가됨] 사이드바 하단 문의처
+# 5. 사이드바 하단 문의처
 # ==========================================
 with st.sidebar:
-    st.markdown("---") # 구분선
-    # st.caption을 써도 되지만, HTML로 폰트 크기를 더 세밀하게 조정했습니다.
+    st.markdown("---") 
     st.markdown(
         """
         <div style="font-size: 12px; color: #666;">
             <b>📞 시스템 문의 및 제보</b><br>
             <br>
-            안전관리팀 주임 진형국<br>
+            안전관리팀 진형국<br>
             (내선 4872)
         </div>
         """,

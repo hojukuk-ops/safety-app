@@ -31,7 +31,7 @@ if img_data:
     user_req = st.text_input("중점 확인 요청사항 (선택)", placeholder="예: 추락 위험 중심으로 봐줘")
     
     if st.button("🚀 AI 분석 시작", type="primary", use_container_width=True):
-        with st.spinner("🚧 베테랑 AI가 법적 기준을 검토 중입니다..."):
+        with st.spinner("🚧 베테랑 AI가 잠재 유해·위험 요인을 파악 중입니다..."):
             try:
                 model = genai.GenerativeModel('gemini-3-flash-preview')
                 prompt = f"""

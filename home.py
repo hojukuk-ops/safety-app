@@ -1,9 +1,9 @@
 import streamlit as st
 
-# [주의] st.set_page_config는 app.py에 있으므로 여기선 뺍니다.
+# [주의] st.set_page_config는 app.py에 있으므로 생략
 
 # ==========================================
-# 1. 스타일 설정 (제목을 버튼처럼 보이게 꾸미기)
+# 1. 스타일 설정 (홈 화면 전용 - 버튼 꾸미기)
 # ==========================================
 st.markdown("""
 <style>
@@ -39,10 +39,9 @@ st.markdown("""
         margin: 0 !important;
     }
     
-    /* 제목 옆 쇠사슬 아이콘 숨기기 */
-    [data-testid="stHeaderActionElements"] {
-        display: none !important;
-    }
+    /* [삭제됨] 제목 옆 쇠사슬 아이콘 숨기기 코드
+       이유: app.py (관제탑)에서 이미 전역 설정으로 숨겼습니다!
+    */
 </style>
 """, unsafe_allow_html=True)
 
@@ -55,7 +54,11 @@ st.markdown("---")
 
 # 공지사항
 with st.container(border=True):
-    st.info("📢 **[공지]** 현장 순회 점검 시 'AI 위험성평가' 기능을 적극 활용 바랍니다.")
+    st.info("""
+    📢 **[주요 공지사항]** 1. 도급·용역 계약 시 '도급·용역 안전 도우미' 기능을 적극 활용 바랍니다.
+    2. 현장 순회 점검 시 'AI 세이프티 렌즈 (위험성평가)' 기능을 적극 활용 바랍니다.
+    3. 앱 사용 중 발생하는 오류는 안전관리팀으로 문의해주세요.
+    """)
 
 st.write("") 
 
@@ -76,8 +79,7 @@ with col1:
         
         # 👇 2. 설명은 버튼 아래에 텍스트로만 존재 (클릭 안 됨)
         st.write("") 
-        st.write("👉 공사·용역 계약 시 필요한 안전 서류와 절차를 안내받고, 결과 보고서를 생성합니다.")
-        # (여기에 더 이상 버튼 코드가 없어야 합니다!)
+        st.write("👉 도급·용역 계약 시 필요한 안전 서류와 절차를 안내받고, 결과 보고서 및 교육일지를 생성합니다.")
 
 # [오른쪽] AI 위험성평가
 with col2:
@@ -92,10 +94,9 @@ with col2:
         # 👇 2. 설명
         st.write("")
         st.write("👉 현장 사진을 촬영하면 AI가 위험요인을 분석하고 대책을 알려줍니다.")
-        # (여기도 밑에 버튼 없어야 함!)
 
 # ==========================================
 # 4. 푸터
 # ==========================================
 st.markdown("---")
-st.caption("ⓒ Ansan Urban Corporation Safety Team")
+st.caption("ⓒ Ansan Urban Corporation Safety Team | 시스템 문의: 안전관리팀 주임 진형국(내선 4872)")
