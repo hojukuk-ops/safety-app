@@ -59,7 +59,7 @@ with st.sidebar:
         <div style="font-size: 12px; color: #666;">
             <b>📞 시스템 문의 및 제보</b><br>
             <br>
-            안전관리팀 진형국<br>
+            안전관리팀 주임 진형국<br>
             (내선 4872)
         </div>
         """,
