@@ -1,86 +1,92 @@
 import streamlit as st
 
-# ---------------------------------------------------------
-# [중요] st.set_page_config 코드는 삭제했습니다.
-# (이유: app.py에서 이미 설정을 마쳤기 때문입니다.)
-# ---------------------------------------------------------
+# [중요] st.set_page_config 삭제됨 (app.py에서 이미 설정함)
 
 # ==========================================
-# 1. [스타일] 글자 짤림 방지 CSS (여기가 핵심!)
+# 1. [스타일] CSS (버튼을 제목처럼 예쁘게 꾸미기)
 # ==========================================
 st.markdown("""
 <style>
-    /* 1. 카드 안의 소제목(Subheader) 줄바꿈 허용 */
-    div[data-testid="stVerticalBlock"] h3 {
-        white-space: normal !important; /* 강제로 줄바꿈 허용 */
-        word-break: keep-all;           /* 단어 단위로 예쁘게 끊기 */
-        font-size: 1.5rem !important;   /* 제목 크기 조절 */
-        min-height: 3rem;               /* 제목 높이 확보 (두 줄 될 때 대비) */
-    }
-    
-    /* 2. 설명 텍스트 줄바꿈 허용 */
+    /* 1. 설명 텍스트 줄바꿈 허용 */
     div[data-testid="stVerticalBlock"] p {
         white-space: normal !important;
         word-break: keep-all;
+        color: #555; /* 설명 글씨색을 약간 회색으로 */
     }
 
-    /* 3. 버튼(Page Link) 텍스트 스타일 */
+    /* 2. 버튼(Page Link) 스타일 업그레이드 */
     a[data-testid="stPageLink-NavLink"] {
-        border: 1px solid #e0e0e0;      /* 테두리 추가 */
+        border: 1px solid #ddd;      /* 테두리 */
+        background-color: #f9f9f9;   /* 연한 회색 배경 */
+        text-align: left !important; /* 글자 왼쪽 정렬 */
+    }
+    
+    /* 3. 버튼 안의 글자(Title) 크기 키우기 */
+    a[data-testid="stPageLink-NavLink"] p {
+        font-size: 1.3rem !important; /* 글자 크기 키움 (제목처럼 보이게) */
+        font-weight: 700 !important;  /* 두껍게 (Bold) */
+        line-height: 1.4 !important;
+        white-space: normal !important;
+        word-break: keep-all;
+    }
+    
+    /* 4. 제목 옆 쇠사슬 아이콘 숨기기 */
+    [data-testid="stHeaderActionElements"] {
+        display: none !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 2. 메인 헤더 및 알림
+# 2. 메인 헤더
 # ==========================================
-st.title("🏗️ 안산도시공사 AI 안전보건 플랫폼")
+st.title("🏗️ 안산도시공사 안전보건 플랫폼")
 st.markdown("### 환영합니다! 원하시는 업무를 선택해주세요. 👋")
 st.markdown("---")
 
-# 공지사항 (필요 시 수정)
+# 공지사항
 with st.container(border=True):
     st.info("📢 **[공지]** 사용관련하여 궁금한 점 및 필요한 기능 요청, 버그 제보는 안전관리팀으로 문의주세요.")
 
-st.write("") # 빈 줄로 여백 주기
+st.write("") 
 
 # ==========================================
-# 3. 메뉴 바로가기 버튼 (카드 형태)
+# 3. 메뉴 바로가기 (제목 자체가 버튼이 됨!)
 # ==========================================
 col1, col2 = st.columns(2)
 
 # [왼쪽] 도급 안전 도우미
 with col1:
     with st.container(border=True):
-        st.subheader("📑 도급·용역 안전 도우미")
-        st.write("공사·용역 계약 시 필요한 안전 서류와 절차를 안내받고, 결과 보고서 및 교육일지를 생성합니다.")
-        st.write("") # 여백
-        
-        # 👇 파일명에 점(·)이 포함된 것 확인했습니다. 아주 좋습니다.
+        # 👇 [핵심 변경] 제목(subheader)을 지우고, 버튼을 맨 위로 올렸습니다!
         st.page_link(
             "pages/1_📑_도급·용역_안전_도우미.py", 
-            label="(클릭)도급·용역 안전보건 절차 확인 시작", 
-            icon="📑", 
-            use_container_width=True
+            label="📑 도급·용역 안전 도우미",  # 여기에 제목을 적습니다
+            icon=None, # 아이콘은 라벨에 포함되어 있어서 뺌 (취향껏 넣어도 됨)
+            use_container_width=True # 박스 꽉 차게
         )
+        
+        # 설명은 버튼 아래에
+        st.write("") 
+        st.write("👉 공사·용역 계약 시 필요한 안전 서류와 절차를 안내받고, 결과 보고서 및 교육일지를 생성합니다.")
 
 # [오른쪽] AI 세이프티 렌즈
 with col2:
     with st.container(border=True):
-        st.subheader("📸 AI 세이프티 렌즈 (위험성 평가)")
-        st.write("현장 사진을 촬영하거나 업로드하면, AI가 법적 기준에 맞춰 위험요인을 분석하고 대책을 알려줍니다.")
-        st.write("") # 여백
-        
-        # 👇 페이지 이동 버튼
+        # 👇 [핵심 변경] 여기도 마찬가지
         st.page_link(
             "pages/2_📸_AI_세이프티_렌즈.py", 
-            label="(클릭)위험성평가 시작", 
-            icon="📸", 
+            label="📸 AI 세이프티 렌즈 (위험성 평가)", 
+            icon=None,
             use_container_width=True
         )
+        
+        # 설명
+        st.write("")
+        st.write("👉 현장 사진을 촬영하거나 업로드하면, AI가 법적 기준에 맞춰 위험요인을 분석하고 대책을 알려줍니다.")
 
 # ==========================================
-# 4. 푸터 (하단 정보)
+# 4. 푸터
 # ==========================================
 st.markdown("---")
-st.caption("ⓒ Ansan Urban Corporation Safety Team | 시스템 문의: 안전관리팀 주임 진형국(내선 4872)")
+st.caption("ⓒ Ansan Urban Corporation Safety Team | 시스템 문의: 안전관리팀 진형국(내선 4872)")
