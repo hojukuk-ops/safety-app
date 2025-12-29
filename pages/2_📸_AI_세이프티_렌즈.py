@@ -2,7 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 from PIL import Image
 
-st.set_page_config(page_title="AI 세이프티 렌즈 (위험성 평가)", page_icon="📸")
+st.set_page_config(page_title="안산도시공사 AI 세이프티 렌즈 (위험성 평가)", page_icon="📸")
 
 # API 키 설정
 try:
@@ -12,7 +12,7 @@ except:
     st.error("🚨 API 키 오류: secrets.toml을 확인하세요.")
     st.stop()
 
-st.title("📸 AI 세이프티 렌즈 (위험성 평가)")
+st.title("📸 안산도시공사 AI 세이프티 렌즈 (위험성 평가)")
 st.info("현장 사진을 찍거나 업로드하면, AI를 활용하여 산업안전보건법 기반으로 위험성평가를 실시합니다.")
 
 # 입력 방식 선택
