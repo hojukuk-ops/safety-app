@@ -101,7 +101,7 @@ st.write("") # 버튼 사이 간격
 with st.container(border=True):
     st.page_link(
         "pages/3_👮_AI_근로감독관.py", 
-        label="👮 AI 근로감독관", 
+        label="👮 AI 근로감독관 (챗봇)", 
         use_container_width=True
     )
     st.write("")

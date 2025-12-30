@@ -41,7 +41,7 @@ pages = {
         st.Page("pages/1_📑_도급·용역_안전_도우미.py", title="도급·용역 AI 안전 도우미", icon="📑"),
         st.Page("pages/2_📸_AI_세이프티_렌즈.py", title="AI 세이프티 렌즈 (위험성 평가)", icon="📸"),
         # 👇 [신규] 파일명과 제목을 'AI 근로감독관'으로 변경했습니다!
-        st.Page("pages/3_👮_AI_근로감독관.py", title="AI 근로감독관", icon="👮"),
+        st.Page("pages/3_👮_AI_근로감독관.py", title="AI 근로감독관 (챗봇)", icon="👮"),
     ]
 }
 

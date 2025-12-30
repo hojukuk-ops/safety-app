@@ -2,8 +2,6 @@ import streamlit as st
 import google.generativeai as genai
 from PIL import Image
 
-st.set_page_config(page_title="안산도시공사 AI 세이프티 렌즈 (위험성 평가)", page_icon="📸")
-
 # API 키 설정
 try:
     API_KEY = st.secrets["GOOGLE_API_KEY"]
