@@ -40,7 +40,7 @@ with tab1:
         with st.chat_message("assistant"):
             with st.spinner("법령 및 지침을 검토 중입니다..."):
                 try:
-                    model = genai.GenerativeModel('gemini-1.5-flash')
+                    model = genai.GenerativeModel('gemini-3-flash-preview')
                     prompt = f"""
                     당신은 냉철하고 정확한 '대한민국 고용노동부 근로감독관'이자 '산업안전 전문가'입니다.
                     사용자의 질문에 대해 법적 근거(산업안전보건법, 시행령, 규칙, KOSHA Guide 등)를 명확히 들어 답변하세요.
@@ -75,18 +75,17 @@ with tab2:
     with col3:
         st.link_button("🚨 재난법 (3단)", "https://www.law.go.kr/LSW/lsSc.do?menuId=1&query=%EC%9E%AC%EB%82%9C%20%EB%B0%8F%20%EC%95%88%EC%A0%84%EA%B4%80%EB%A6%AC%20%EA%B8%B0%EB%B3%B8%EB%B2%95", use_container_width=True)
 
-    # [삭제됨] KOSHA 가이드, 지방공기업 가이드라인 등 잡다한 링크 제거함
-
 # ==========================================
-# [탭 3] 사내 규정 (안산도시공사 전용)
+# [탭 3] 사내 규정 (안산도시공사 전체 규정)
 # ==========================================
 with tab3:
     st.markdown("### 📑 안산도시공사 사규")
     st.info("국가법령정보센터와 연동된 공사 최신 규정입니다.")
     st.write("")
 
-    c1, c2 = st.columns(2)
-    with c1:
-        st.link_button("🏢 공사 규정 전체", "https://www.law.go.kr/schlPubRulSc.do?menuId=13&subMenuId=467&tabMenuId=509&query=%EC%95%88%EC%82%B0%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%82%AC", use_container_width=True)
-    with c2:
-        st.link_button("⛑️ 안전보건관리규정", "https://www.law.go.kr/schlPubRulSc.do?menuId=13&subMenuId=467&tabMenuId=509&query=%EC%95%88%EC%82%B0%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%82%AC#liBgcolor26", use_container_width=True)
+    # 버튼 하나만 남기고, 꽉 차게 배치
+    st.link_button(
+        "🏢 안산도시공사 규정 전체보기", 
+        "https://www.law.go.kr/schlPubRulSc.do?menuId=13&subMenuId=467&tabMenuId=509&query=%EC%95%88%EC%82%B0%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%82%AC", 
+        use_container_width=True
+    )
