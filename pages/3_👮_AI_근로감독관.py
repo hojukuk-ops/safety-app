@@ -1,0 +1,92 @@
+import streamlit as st
+import google.generativeai as genai
+
+# [주의] st.set_page_config는 app.py에서 설정하므로 생략
+
+# API 키 설정
+try:
+    API_KEY = st.secrets["GOOGLE_API_KEY"]
+    genai.configure(api_key=API_KEY)
+except:
+    st.error("🚨 API 키 오류: secrets.toml을 확인하세요.")
+    st.stop()
+
+# ==========================================
+# 헤더: AI 근로감독관 페르소나 설정
+# ==========================================
+st.title("👮 AI 근로감독관 (법령 상담)")
+st.info("산업안전보건법, 중대재해처벌법 등 복잡한 법령, **AI 근로감독관**에게 바로 물어보세요!")
+
+# 탭 메뉴 구성
+tab1, tab2, tab3 = st.tabs(["💬 법령 상담(채팅)", "⚖️ 법령 3단 보기", "📑 사내 규정"])
+
+# ==========================================
+# [탭 1] AI 근로감독관 채팅 (메인 기능)
+# ==========================================
+with tab1:
+    # 채팅방 느낌을 주는 디자인
+    with st.chat_message("assistant"):
+        st.write("반갑습니다. 안산도시공사 **AI 근로감독관**입니다. 👮‍♂️\n\n작업 현장의 안전 기준이나 법적 과태료 사항 등 궁금한 점을 물어보세요.")
+
+    # 사용자 입력
+    user_question = st.chat_input("질문 예: 2m 이상 고소작업 시 안전난간 설치 기준은?")
+
+    if user_question:
+        # 사용자의 질문을 화면에 표시
+        with st.chat_message("user"):
+            st.write(user_question)
+
+        # AI 답변 생성 및 표시
+        with st.chat_message("assistant"):
+            with st.spinner("법령 및 지침을 검토 중입니다..."):
+                try:
+                    model = genai.GenerativeModel('gemini-1.5-flash')
+                    prompt = f"""
+                    당신은 냉철하고 정확한 '대한민국 고용노동부 근로감독관'이자 '산업안전 전문가'입니다.
+                    사용자의 질문에 대해 법적 근거(산업안전보건법, 시행령, 규칙, KOSHA Guide 등)를 명확히 들어 답변하세요.
+                    
+                    [답변 원칙]
+                    1. 근거 없는 답변은 하지 않는다.
+                    2. 법 조항(제몇조 제몇항)을 구체적으로 명시한다.
+                    3. 현장에서 실천해야 할 '핵심 조치사항'을 요약해준다.
+                    4. 말투는 정중하되, 전문가답게 단호하고 명확하게 한다.
+
+                    사용자 질문: {user_question}
+                    """
+                    response = model.generate_content(prompt)
+                    st.markdown(response.text)
+                except Exception as e:
+                    st.error(f"상담 중 오류가 발생했습니다: {e}")
+
+# ==========================================
+# [탭 2] 법령 3단 보기 (핵심 법령만 깔끔하게!)
+# ==========================================
+with tab2:
+    st.markdown("### ⚖️ 주요 안전 법령 (3단 보기)")
+    st.caption("👇 버튼을 누르면 법(법률), 시행령, 시행규칙을 한 화면에서 연결해 봅니다.")
+    st.write("") # 여백
+
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.link_button("🏗️ 산안법 (3단)", "https://www.law.go.kr/LSW/lsSc.do?menuId=1&query=%EC%82%B0%EC%97%85%EC%95%88%EC%A0%84%EB%B3%B4%EA%B1%B4%EB%B2%95", use_container_width=True)
+    with col2:
+        st.link_button("⚖️ 중처법 (3단)", "https://www.law.go.kr/LSW/lsSc.do?menuId=1&query=%EC%A4%91%EB%8C%80%EC%9E%AC%ED%95%B4%EC%B2%98%EB%B2%8C%EB%B2%95", use_container_width=True)
+    with col3:
+        st.link_button("🚨 재난법 (3단)", "https://www.law.go.kr/LSW/lsSc.do?menuId=1&query=%EC%9E%AC%EB%82%9C%20%EB%B0%8F%20%EC%95%88%EC%A0%84%EA%B4%80%EB%A6%AC%20%EA%B8%B0%EB%B3%B8%EB%B2%95", use_container_width=True)
+
+    # [삭제됨] KOSHA 가이드, 지방공기업 가이드라인 등 잡다한 링크 제거함
+
+# ==========================================
+# [탭 3] 사내 규정 (안산도시공사 전용)
+# ==========================================
+with tab3:
+    st.markdown("### 📑 안산도시공사 사규")
+    st.info("국가법령정보센터와 연동된 공사 최신 규정입니다.")
+    st.write("")
+
+    c1, c2 = st.columns(2)
+    with c1:
+        st.link_button("🏢 공사 규정 전체", "https://www.law.go.kr/schlPubRulSc.do?menuId=13&subMenuId=467&tabMenuId=509&query=%EC%95%88%EC%82%B0%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%82%AC", use_container_width=True)
+    with c2:
+        st.link_button("⛑️ 안전보건관리규정", "https://www.law.go.kr/schlPubRulSc.do?menuId=13&subMenuId=467&tabMenuId=509&query=%EC%95%88%EC%82%B0%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%82%AC#liBgcolor26", use_container_width=True)
