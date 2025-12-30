@@ -3,7 +3,7 @@ import streamlit as st
 # [주의] st.set_page_config는 app.py에서 설정하므로 생략
 
 # ==========================================
-# 1. 스타일 설정 (애니메이션 제거, 깔끔한 반응)
+# 1. 스타일 설정 (밑줄 강제 제거 및 디자인 수정)
 # ==========================================
 st.markdown("""
 <style>
@@ -15,20 +15,23 @@ st.markdown("""
         border-radius: 12px;         /* 둥글게 */
         padding: 20px;               /* 내부 여백 */
         text-align: center;
-        text-decoration: none;       /* 밑줄 제거 */
+        
+        /* 🚨 수정됨: !important를 붙여서 밑줄을 강제로 없앰 */
+        text-decoration: none !important; 
+        
         color: #0056b3 !important;   /* 글자색 */
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         margin-bottom: 15px;         /* 버튼 간 간격 */
-        
-        /* 🚨 수정됨: transition(서서히 변함) 제거 -> 즉시 반응 */
     }
     
     /* 마우스 올렸을 때 효과 */
     .link-card:hover {
-        /* 🚨 수정됨: transform(확대) 제거 -> 크기 고정 */
         background-color: #dbeaff;   /* 배경만 약간 진하게 */
         border-color: #0056b3;       /* 테두리 진하게 */
-        text-decoration: none;
+        
+        /* 🚨 수정됨: 마우스 올려도 밑줄 안 생기게 유지 */
+        text-decoration: none !important;
+        
         color: #003d82 !important;   /* 글자 진하게 */
     }
 
@@ -54,7 +57,7 @@ st.markdown("""
 # ==========================================
 st.title("⚖️ 안전보건관련 법령")
 st.info("아래 카드를 클릭하면 **최신 법령 원문(3단 비교)** 및 **사내 규정** 페이지로 이동합니다.")
-st.write("") # 간격
+st.write("") 
 
 # ==========================================
 # 3. 법령 카드 배치 (2열로 배치)
