@@ -3,7 +3,7 @@ import streamlit as st
 # [주의] st.set_page_config는 app.py에서 설정하므로 생략
 
 # ==========================================
-# 1. 스타일 설정 (Home.py와 동일한 디자인)
+# 1. 스타일 설정 (애니메이션 제거, 깔끔한 반응)
 # ==========================================
 st.markdown("""
 <style>
@@ -19,15 +19,17 @@ st.markdown("""
         color: #0056b3 !important;   /* 글자색 */
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         margin-bottom: 15px;         /* 버튼 간 간격 */
-        transition: transform 0.2s;
+        
+        /* 🚨 수정됨: transition(서서히 변함) 제거 -> 즉시 반응 */
     }
     
     /* 마우스 올렸을 때 효과 */
     .link-card:hover {
-        transform: scale(1.02);
-        background-color: #e0f0ff;
+        /* 🚨 수정됨: transform(확대) 제거 -> 크기 고정 */
+        background-color: #dbeaff;   /* 배경만 약간 진하게 */
+        border-color: #0056b3;       /* 테두리 진하게 */
         text-decoration: none;
-        color: #004494 !important;
+        color: #003d82 !important;   /* 글자 진하게 */
     }
 
     /* 제목 텍스트 스타일 */
@@ -77,7 +79,7 @@ with col2:
     </a>
     """, unsafe_allow_html=True)
 
-# [두 번째 줄] - 수정된 부분 (변수 선언 오류 수정)
+# [두 번째 줄]
 col3, col4 = st.columns(2) 
 
 with col3:
