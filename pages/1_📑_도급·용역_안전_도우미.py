@@ -37,17 +37,17 @@ with col1:
     amount = st.number_input("공사 금액 (원)", min_value=0, step=100000, format="%d")
 
 with col2:
-    duration = st.number_input("계약 기간 (일)", min_value=1, value=1)
+    duration = st.number_input("계약 기간(공사기간X) (일)", min_value=1, value=1)
     
 st.markdown("### ✅ 작업 조건 체크")
-check_outside = st.checkbox("사업장 밖(외) 작업인가요?")
+check_outside = st.checkbox("안산도시공사 사업장 밖에서 작업하나요?(EX. 자동차 수리점에서 작업 등)")
 # 문구 수정: 사용자가 헷갈리지 않게 설명을 보강
 check_high_risk = st.checkbox("고위험 작업이 포함되어 있나요? (밀폐공간, 고소, 중장비, 화기, 굴착, 방사선 작업 등)")
 col_sub1, col_sub2 = st.columns(2)
 with col_sub1:
-    check_over_30 = st.checkbox("연속된 작업으로 공사 기간 30일 초과")
+    check_over_30 = st.checkbox("연속된 작업으로 공사 기간 30일 초과(순수 공사일수만, 계약기간 X)")
 with col_sub2:
-    check_over_60_year = st.checkbox("간헐적 작업으로 연간 총 공사기간 60일 초과")
+    check_over_60_year = st.checkbox("간헐적 작업으로 연간 총 공사기간 60일 초과(순수 공사일수만, 계약기간 X)")
 
 # ==========================================
 # 2. 로직 처리 함수
