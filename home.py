@@ -3,7 +3,7 @@ import streamlit as st
 # [주의] st.set_page_config는 app.py에 있으므로 생략
 
 # ==========================================
-# 1. 스타일 설정 (모바일 최적화 디자인)
+# 1. 스타일 설정 (모바일 최적화 & 카드 디자인)
 # ==========================================
 st.markdown("""
 <style>
@@ -23,7 +23,7 @@ st.markdown("""
         text-align: center !important; 
         box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
         transition: transform 0.2s;  
-        margin-bottom: 5px; /* 버튼 아래 간격 */
+        margin-bottom: 10px; /* 버튼 아래 간격 */
     }
 
     /* 눌렀을 때 효과 */
@@ -34,7 +34,7 @@ st.markdown("""
     
     /* 버튼 글씨 크기 키움 (모바일 가독성) */
     a[data-testid="stPageLink-NavLink"] p {
-        font-size: 1.3rem !important; 
+        font-size: 1.2rem !important; 
         font-weight: 800 !important;  
         color: #0056b3 !important;    
         margin: 0 !important;
@@ -57,55 +57,54 @@ st.markdown("---")
 # 공지사항
 with st.container(border=True):
     st.info("""
-    📢 **[주요 공지사항]**
-            
-            1. 도급·용역 계약 시 '도급·용역 안전 도우미' 기능을 적극 활용 바랍니다.
-
-            2. 현장 순회 점검 시 'AI 위험성평가' 기능을 활용하여 기록을 남겨주세요.
-
-            3. 법적 기준이 헷갈릴 땐 'AI 근로감독관'에게 채팅으로 물어보세요.
+    📢 **[시스템 안내]**
+    
+    1. **도급 안전 도우미:** 계약 단계별 필수 서류와 절차를 안내합니다.
+    2. **AI 위험성평가:** 현장 사진을 분석하여 위험요인을 찾아냅니다.
+    3. **AI 근로감독관:** 궁금한 법령과 기준을 채팅으로 물어보세요.
+    4. **안전보건 법령:** 관계 법령 및 공사 사규 원문을 확인하세요.
     """)
 
 st.write("") # 간격 띄우기
 
 # ==========================================
-# 3. 메뉴 바로가기 (세로 배치 - 모바일 최적화)
+# 3. 메뉴 바로가기 (총 4개 기능)
 # ==========================================
-# 👇 st.columns(3)를 제거하고, 그냥 순서대로 쭉 나열합니다.
 
 # [1번] 도급 안전 도우미
-with st.container(border=True):
-    st.page_link(
-        "pages/1_📑_도급·용역_안전_도우미.py", 
-        label="📑 도급·용역 AI 안전 도우미", 
-        use_container_width=True
-    )
-    st.write("") 
-    st.write("👉 도급·용역 계약 시 필요한 안전 서류와 절차를 안내받고 보고서를 만듭니다.")
-
-st.write("") # 버튼 사이 간격
+st.page_link(
+    "pages/1_📑_도급·용역_안전_도우미.py", 
+    label="📑 도급·용역 AI 안전 도우미", 
+    use_container_width=True
+)
+st.caption("👉 계약 시 필요한 안전 서류와 절차를 안내받고 보고서를 만듭니다.")
+st.write("") 
 
 # [2번] AI 위험성평가
-with st.container(border=True):
-    st.page_link(
-        "pages/2_📸_AI_세이프티_렌즈.py", 
-        label="📸 AI 세이프티 렌즈 (위험성 평가)", 
-        use_container_width=True
-    )
-    st.write("")
-    st.write("👉 현장 사진을 찍으면 AI가 위험요인을 분석하고 대책을 알려줍니다.")
+st.page_link(
+    "pages/2_📸_AI_세이프티_렌즈.py", 
+    label="📸 AI 세이프티 렌즈 (위험성 평가)", 
+    use_container_width=True
+)
+st.caption("👉 현장 사진을 찍으면 위험요인을 분석하고 대책을 알려줍니다.")
+st.write("")
 
-st.write("") # 버튼 사이 간격
+# [3번] AI 근로감독관 (챗봇)
+st.page_link(
+    "pages/3_👮_AI_근로감독관.py", 
+    label="👮 AI 근로감독관 (챗봇)", 
+    use_container_width=True
+)
+st.caption("👉 궁금한 법령, 과태료 기준을 AI에게 채팅으로 물어보세요.")
+st.write("")
 
-# [3번] AI 근로감독관
-with st.container(border=True):
-    st.page_link(
-        "pages/3_👮_AI_근로감독관.py", 
-        label="👮 AI 근로감독관 (챗봇)", 
-        use_container_width=True
-    )
-    st.write("")
-    st.write("👉 산업안전보건법, 중대재해처벌법, 재난안전법과 관련하여 궁금한 점을  AI 감독관에게 채팅으로 물어보세요.")
+# [4번] 안전보건관련 법령
+st.page_link(
+    "pages/4_⚖️_안전보건관련_법령.py", 
+    label="⚖️ 안전보건관련 법령 및 사규", 
+    use_container_width=True
+)
+st.caption("👉 산업안전보건법, 중대재해처벌법 및 공사 규정 원문을 확인합니다.")
 
 # ==========================================
 # 4. 푸터
