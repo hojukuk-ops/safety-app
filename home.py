@@ -99,7 +99,7 @@ st.markdown("---")
 
 # [4번] 안전보건관련 법령
 st.page_link("pages/4_⚖️_안전보건관련_법령.py", label="⚖️ 안전보건관련 법령 및 사규", use_container_width=True)
-st.markdown('<p class="feature-desc">└ 👉 산안법, 중처법, 재난법, 및 공사 사규 조회</p>', unsafe_allow_html=True)
+st.markdown('<p class="feature-desc">└ 👉 산안법, 중처법, 재난법 및 공사 사규 조회</p>', unsafe_allow_html=True)
 
 
 # ==========================================
