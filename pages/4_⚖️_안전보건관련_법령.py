@@ -16,7 +16,7 @@ st.markdown("""
         padding: 20px;               /* 내부 여백 */
         text-align: center;
         
-        /* 🚨 수정됨: !important를 붙여서 밑줄을 강제로 없앰 */
+        /* 🚨 밑줄 강제 제거 (!important) */
         text-decoration: none !important; 
         
         color: #0056b3 !important;   /* 글자색 */
@@ -29,7 +29,7 @@ st.markdown("""
         background-color: #dbeaff;   /* 배경만 약간 진하게 */
         border-color: #0056b3;       /* 테두리 진하게 */
         
-        /* 🚨 수정됨: 마우스 올려도 밑줄 안 생기게 유지 */
+        /* 🚨 마우스 올려도 밑줄 안 생기게 유지 */
         text-decoration: none !important;
         
         color: #003d82 !important;   /* 글자 진하게 */
@@ -48,6 +48,7 @@ st.markdown("""
         font-size: 0.95rem;
         color: #333;
         font-weight: 500;
+        line-height: 1.4;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -60,10 +61,10 @@ st.info("아래 카드를 클릭하면 법제처 국가법령정보센터에서 
 st.write("") 
 
 # ==========================================
-# 3. 법령 카드 배치 (2열로 배치)
+# 3. 법령 카드 배치 (2열 x 3행 = 총 6개)
 # ==========================================
 
-# [첫 번째 줄]
+# [첫 번째 줄] 핵심 안전 법령 (산안법, 중처법)
 col1, col2 = st.columns(2)
 
 with col1:
@@ -82,10 +83,29 @@ with col2:
     </a>
     """, unsafe_allow_html=True)
 
-# [두 번째 줄]
+# [두 번째 줄] 시설 및 건설 법령 (시특법, 건진법) - ✨ 신규 추가됨!
 col3, col4 = st.columns(2) 
 
 with col3:
+    st.markdown("""
+    <a href="https://www.law.go.kr/LSW/lsSc.do?menuId=1&query=%EC%8B%9C%EC%84%A4%EB%AC%BC%EC%9D%98%20%EC%95%88%EC%A0%84%20%EB%B0%8F%20%EC%9C%A0%EC%A7%80%EA%B4%80%EB%A6%AC%EC%97%90%20%EA%B4%80%ED%95%9C%20%ED%8A%B9%EB%B3%84%EB%B2%95" target="_blank" class="link-card">
+        <span class="card-title">🏢 시설물안전법 (시특법)</span>
+        <span class="card-desc">1·2·3종 시설물의 안전진단 및<br>유지관리 의무 규정</span>
+    </a>
+    """, unsafe_allow_html=True)
+
+with col4:
+    st.markdown("""
+    <a href="https://www.law.go.kr/LSW/lsSc.do?menuId=1&query=%EA%B1%B4%EC%84%A4%EA%B8%B0%EC%88%A0%20%EC%A7%84%ED%9D%A5%EB%B2%95" target="_blank" class="link-card">
+        <span class="card-title">🚜 건설기술 진흥법 (건진법)</span>
+        <span class="card-desc">건설공사 안전관리계획서 수립 및<br>품질관리 기준</span>
+    </a>
+    """, unsafe_allow_html=True)
+
+# [세 번째 줄] 재난 법령 및 사규
+col5, col6 = st.columns(2)
+
+with col5:
     st.markdown("""
     <a href="https://www.law.go.kr/LSW/lsSc.do?menuId=1&query=%EC%9E%AC%EB%82%9C%20%EB%B0%8F%20%EC%95%88%EC%A0%84%EA%B4%80%EB%A6%AC%20%EA%B8%B0%EB%B3%B8%EB%B2%95" target="_blank" class="link-card">
         <span class="card-title">🚨 재난안전기본법</span>
@@ -93,10 +113,10 @@ with col3:
     </a>
     """, unsafe_allow_html=True)
 
-with col4:
+with col6:
     st.markdown("""
     <a href="https://www.law.go.kr/schlPubRulSc.do?menuId=13&subMenuId=467&tabMenuId=509&query=%EC%95%88%EC%82%B0%EB%8F%84%EC%8B%9C%EA%B3%B5%EC%82%AC" target="_blank" class="link-card">
-        <span class="card-title">🏢 안산도시공사 사규</span>
+        <span class="card-title">📒 안산도시공사 사규</span>
         <span class="card-desc">공사 안전보건관리규정 등<br>내부 지침 전체보기</span>
     </a>
     """, unsafe_allow_html=True)
